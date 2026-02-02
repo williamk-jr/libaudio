@@ -1,3 +1,8 @@
+cmake_minimum_required(VERSION 3.10)
+
+project(libaudio)
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+
 add_library(libaudio STATIC
 	"libaudio/audio_stream.cpp"
 	"libaudio/audio_chunk.cpp"
@@ -35,4 +40,5 @@ target_link_libraries(libaudio
 if(DEFINED LIBAUDIO_DEBUG_PROGRAM)
   add_executable(test_audio main.cpp)
   target_link_libraries(test_audio libaudio)
+  target_include_directories(test_audio PRIVATE ${PROJECT_SOURCE_DIR}/libaudio)
 endif()
