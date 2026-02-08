@@ -16,11 +16,11 @@ namespace iamaprogrammer {
     Pa_Terminate();
   }
 
-  AudioDevice PortAudioBackend::getDefaultAudioDevice() {
+  const AudioDevice PortAudioBackend::getDefaultAudioDevice() const {
     return this->getAudioDevice(Pa_GetDefaultOutputDevice());
   }
 
-  AudioDevice PortAudioBackend::getAudioDevice(int device) {
+  const AudioDevice PortAudioBackend::getAudioDevice(int device) const {
     if (device == paNoDevice) {
       throw std::runtime_error("No default output device found.");
     }

@@ -11,7 +11,7 @@ namespace iamaprogrammer {
     virtual void initialize() = 0;
     virtual void terminate() = 0;
 
-    virtual AudioDevice getDefaultAudioDevice() = 0;
-    virtual AudioDevice getAudioDevice(int id) = 0;
+    virtual const AudioDevice getDefaultAudioDevice() const = 0;
+    virtual const AudioDevice getAudioDevice(int id) const = 0;
   };
 }

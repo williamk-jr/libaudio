@@ -7,20 +7,12 @@ namespace iamaprogrammer {
 
   AudioStream::AudioStream() {};
 
-  AudioStream::AudioStream(IAudioReader* reader, IAudioResampler* resampler, IBasicAudioStream* stream):
-    reader(reader),
-    resampler(resampler),
-    basicAudioStream(stream)
+  AudioStream::AudioStream(std::unique_ptr<IAudioReader> reader, std::unique_ptr<IAudioResampler> resampler, std::unique_ptr<IBasicAudioStream> stream) :
+    reader(std::move(reader)),
+    resampler(std::move(resampler)),
+    basicAudioStream(std::move(stream))
   {};
-
-  AudioStream::AudioStream(AudioStreamSettings settings) {
-    // switch (settings.readerType) {
-    //   case ReaderType::SNDLIB:
-    //     //this->reader = std::make_unique<
-    //     break;
-    // }
-  }
-
+  
   void AudioStream::setup() {
     if (this->streamState == StreamState::OPEN) {
       throw std::runtime_error("Stream is already open.");

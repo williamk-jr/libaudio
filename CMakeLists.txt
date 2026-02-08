@@ -7,6 +7,7 @@ add_library(libaudio STATIC
 	"libaudio/audio_stream.cpp"
 	"libaudio/audio_chunk.cpp"
   "libaudio/audio_buffer.cpp"
+  "libaudio/audio_stream_factory.cpp"
 	"libaudio/stream/port_audio_stream.cpp" 
 	"libaudio/backends/port_audio_backend.cpp" 
 	"libaudio/resampler/sr_audio_resampler.cpp" 

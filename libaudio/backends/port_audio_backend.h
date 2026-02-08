@@ -13,8 +13,8 @@ namespace iamaprogrammer {
     void initialize() override;
     void terminate() override;
 
-    AudioDevice getDefaultAudioDevice() override;
-    AudioDevice getAudioDevice(int id) override;
+    const AudioDevice getDefaultAudioDevice() const override;
+    const AudioDevice getAudioDevice(int id) const override;
   private:
     PaError error;
   };

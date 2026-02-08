@@ -12,11 +12,25 @@ namespace iamaprogrammer {
   enum class StreamType {
     PORTAUDIO
   };
+
+
+  struct ReaderSettings {
+    ReaderType readerType;
+    int bufferSize = 1024;
+  };
+
+  struct ResamplerSettings {
+    ResamplerType resamplerType;
+  };
+
+  struct StreamSettings {
+    StreamType streamType;
+  };
   
 
   struct AudioStreamSettings {
-    ReaderType readerType;
-    ResamplerType resamplerType;
-    StreamType streamType;
+    ReaderSettings readerSettings;
+    ResamplerSettings resamplerSettings;
+    StreamSettings streamSettings;
   };
 }
