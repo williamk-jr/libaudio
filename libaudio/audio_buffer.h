@@ -11,13 +11,14 @@
 namespace iamaprogrammer {
   class AudioBuffer {
   public:
-    AudioBuffer(AudioFileDescriptor* audioFileDescriptor, int framesReadCount);
+    AudioBuffer(AudioFileDescriptor& audioFileDescriptor, int framesReadCount);
 
     void push(AudioChunk& chunk);
     AudioChunk& front();
     void pop();
 
     size_t size();
+    bool isEmpty();
 
     const AudioFileDescriptor& getAudioFileDescriptor();
     const int getFrameReadCount();
@@ -25,7 +26,7 @@ namespace iamaprogrammer {
   private:
     std::queue<AudioChunk> buffer;
     
-    AudioFileDescriptor* audioFileDescriptor;
+    AudioFileDescriptor& audioFileDescriptor;
     long framesReadCount;
   };
 }

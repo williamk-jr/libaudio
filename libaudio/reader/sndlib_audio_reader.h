@@ -18,7 +18,7 @@ namespace iamaprogrammer {
     void seek(size_t frames, int whence) override;
 
     void* getReadBuffer() override;
-    AudioFileDescriptor* getAudioFileDescriptor() override;
+    AudioFileDescriptor& getAudioFileDescriptor() override;
     int getFrameReadCount() override;
 
     void close() override;

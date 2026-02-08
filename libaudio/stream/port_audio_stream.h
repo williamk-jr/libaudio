@@ -33,7 +33,6 @@ namespace iamaprogrammer {
     std::string getError() override;
     bool hasError() override;
   private:
-    std::unique_ptr<AudioStreamData> audioStreamData;
 
     PaStream* stream;
     PaError error;
@@ -49,30 +48,34 @@ namespace iamaprogrammer {
       void* userData
     ) {
       float* out = static_cast<float*>(outputBuffer);
-      AudioStreamData& streamData = *static_cast<AudioStreamData*>(userData);
+      std::unique_ptr<AudioStreamData>& streamData = *static_cast<std::unique_ptr<AudioStreamData>*>(userData);
 
       // Audio reader implementations split signals into chunks. Get the most recent chunk from the reader.
-      AudioChunk chunk = streamData.buffer.front();
-      streamData.buffer.pop();
-
-      // Offest current start position when seeking.
-      if (streamData.seeking) {
-        streamData.start += streamData.seekOffset * streamData.data.channels;
-        streamData.seeking = false;
+      if (streamData->buffer.isEmpty()) {
+        return paComplete;
       }
 
-      
+      AudioChunk& chunk = streamData->buffer.front();
+
+      // Offest current start position when seeking.
+      if (streamData->seeking) {
+        streamData->start += streamData->seekOffset * streamData->data.channels;
+        streamData->seeking = false;
+      }
+
       long pos = 0;
       for (unsigned long i = 0; i < framesPerBuffer; i++) {
-        for (int channelOffset = 0; channelOffset < streamData.data.channels; channelOffset++) {
+        for (int channelOffset = 0; channelOffset < streamData->data.channels; channelOffset++) {
           *out++ = chunk.data()->at(pos + channelOffset);
         }
 
-        pos += streamData.data.channels;
-        streamData.start += streamData.data.channels;
+        pos += streamData->data.channels;
+        streamData->start += streamData->data.channels;
       }
 
-      if (streamData.start >= streamData.data.frames * streamData.data.channels) {
+      streamData->buffer.pop();
+
+      if (streamData->start >= streamData->data.frames * streamData->data.channels) {
         return paComplete;
       }
 
@@ -80,7 +83,7 @@ namespace iamaprogrammer {
     }
 
     static void paStreamFinishedCallback(void* userData) {
-      AudioStreamData* streamData = static_cast<AudioStreamData*>(userData);
+      std::unique_ptr<AudioStreamData>& streamData = *static_cast<std::unique_ptr<AudioStreamData>*>(userData);
       streamData->streamFinished = true;
     }
   };

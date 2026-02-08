@@ -94,9 +94,12 @@ namespace iamaprogrammer {
       static int MAX_LOADED_CHUNKS;
       
       // Essential
-      std::unique_ptr<IAudioReader> reader;
-      std::unique_ptr<IAudioResampler> resampler;
-      std::unique_ptr<IBasicAudioStream> basicAudioStream;
+      // std::unique_ptr<IAudioReader> reader;
+      // std::unique_ptr<IAudioResampler> resampler;
+      // std::unique_ptr<IBasicAudioStream> basicAudioStream;
+      IAudioReader* reader;
+      IAudioResampler* resampler;
+      IBasicAudioStream* basicAudioStream;
       std::thread audioReaderThread;
 
       // State

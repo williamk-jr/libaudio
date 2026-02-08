@@ -3,22 +3,22 @@
 #include <string>
 
 namespace iamaprogrammer {
-  int AudioStream::MAX_LOADED_CHUNKS = 10;
+  int AudioStream::MAX_LOADED_CHUNKS = 20;
 
   AudioStream::AudioStream() {};
 
-  // AudioStream::AudioStream(IAudioReader* reader, IAudioResampler* resampler, IBasicAudioStream* stream):
-  //   reader(reader),
-  //   resampler(resampler),
-  //   basicAudioStream(stream)
-  // {};
+  AudioStream::AudioStream(IAudioReader* reader, IAudioResampler* resampler, IBasicAudioStream* stream):
+    reader(reader),
+    resampler(resampler),
+    basicAudioStream(stream)
+  {};
 
   AudioStream::AudioStream(AudioStreamSettings settings) {
-    switch (settings.readerType) {
-      case ReaderType::SNDLIB:
-        //this->reader = std::make_unique<
-        break;
-    }
+    // switch (settings.readerType) {
+    //   case ReaderType::SNDLIB:
+    //     //this->reader = std::make_unique<
+    //     break;
+    // }
   }
 
   void AudioStream::setup() {
@@ -27,7 +27,7 @@ namespace iamaprogrammer {
     }
 
     this->streamState = StreamState::OPEN;
-    AudioFileDescriptor& audioData = *this->reader->getAudioFileDescriptor();
+    AudioFileDescriptor& audioData = this->reader->getAudioFileDescriptor();
 
     this->audioReaderThread = std::thread([this](){ audioReaderThreadCallback(); }); // Start reader thread.
 
@@ -37,6 +37,7 @@ namespace iamaprogrammer {
 
   void AudioStream::start() {
     if (this->basicAudioStream->isStreamStopped()) {
+      std::cout << "Starting stream." << std::endl;
       this->basicAudioStream->startStream();
       this->handleError();
 
@@ -51,7 +52,7 @@ namespace iamaprogrammer {
       this->basicAudioStream->getAudioBuffer().pop();
     }
 
-    long frames = seconds * this->reader->getAudioFileDescriptor()->sampleRate;
+    long frames = seconds * this->reader->getAudioFileDescriptor().sampleRate;
     this->reader->seek(frames, SEEK_CUR);
     this->basicAudioStream->seekStream(frames);
 
@@ -59,6 +60,7 @@ namespace iamaprogrammer {
   }
 
   void AudioStream::stop() {
+    //std::cout << "Ending stream." << std::endl;
     if (this->basicAudioStream->isStreamActive()) {
       this->basicAudioStream->stopStream();
       this->handleError();
@@ -72,23 +74,25 @@ namespace iamaprogrammer {
     }
     this->streamState = StreamState::CLOSED;
 
+    //if (this->audioReaderThread.joinable()) {
+      std::cout << "Joining audio reader thread." << std::endl;
+      this->audioReaderThread.join();
+      std::cout << "Audio reader thread joined." << std::endl;
+    //}
+
     this->basicAudioStream->closeStream();
     this->handleError();
-
-    if (this->audioReaderThread.joinable()) {
-      this->audioReaderThread.join();
-    }
   }
 
   long AudioStream::position() {
     if (this->isStopped()) {
       return -1;
     }
-    return this->basicAudioStream->streamPosition() / this->reader->getAudioFileDescriptor()->sampleRate;
+    return this->basicAudioStream->streamPosition() / this->reader->getAudioFileDescriptor().sampleRate;
   }
 
   long AudioStream::duration() {
-    return this->basicAudioStream->streamDuration() / this->reader->getAudioFileDescriptor()->sampleRate;
+    return this->basicAudioStream->streamDuration() / this->reader->getAudioFileDescriptor().sampleRate;
   }
 
   bool AudioStream::isFinished() {
@@ -111,10 +115,7 @@ namespace iamaprogrammer {
   }
 
   void AudioStream::audioReaderThreadCallback() {
-    while (true) {
-      if (this->streamState == StreamState::CLOSED) {
-        break;
-      }
+    while (this->streamState != StreamState::CLOSED) {
 
       if (this->basicAudioStream->getAudioBuffer().size() >= this->MAX_LOADED_CHUNKS || this->playingState == PlayingState::SEEKING) {
         continue;

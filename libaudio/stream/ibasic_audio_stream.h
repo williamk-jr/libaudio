@@ -9,6 +9,19 @@
 
 namespace iamaprogrammer {
 
+  struct AudioStreamData {
+    const AudioFileDescriptor& data;
+    AudioBuffer& buffer;
+
+    std::atomic<bool> seeking = false;
+    std::atomic<long> seekOffset = 0;
+    std::atomic<long> start = 0;
+
+    std::atomic<bool> streamFinished = true;
+
+    AudioStreamData(const AudioFileDescriptor& audioDesriptor, AudioBuffer& audioBuffer) : data(audioDesriptor), buffer(audioBuffer) {}
+  };
+
   /*
   Holds data important to audio streams.
 
@@ -27,11 +40,14 @@ namespace iamaprogrammer {
     };
 
     IBasicAudioStream(IAudioReader& reader, IAudioResampler& resampler) {
-
-
       this->audioBuffer = std::make_unique<AudioBuffer>(
         reader.getAudioFileDescriptor(), 
         reader.getFrameReadCount() * resampler.getSampleRateConversionRatio()
+      );
+
+      this->audioStreamData = std::make_unique<AudioStreamData>(
+        this->audioBuffer->getAudioFileDescriptor(),
+        *this->audioBuffer
       );
     }
 
@@ -58,22 +74,10 @@ namespace iamaprogrammer {
 
   protected:
     std::unique_ptr<AudioBuffer> audioBuffer;
+    std::unique_ptr<AudioStreamData> audioStreamData;
     //std::unique_ptr<IAudioReader> audioReader;
     //std::unique_ptr<IAudioResampler> audioResampler;
 
     std::atomic<PlayingState> playingState = PlayingState::STOPPED;
-  };
-
-  struct AudioStreamData {
-    const AudioFileDescriptor& data;
-    AudioBuffer& buffer;
-
-    std::atomic<bool> seeking = false;
-    std::atomic<long> seekOffset = 0;
-    std::atomic<long> start = 0;
-
-    std::atomic<bool> streamFinished = true;
-
-    AudioStreamData(const AudioFileDescriptor& audioDesriptor, AudioBuffer& audioBuffer) : data(audioDesriptor), buffer(audioBuffer) {}
   };
 }

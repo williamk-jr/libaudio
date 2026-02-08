@@ -40,7 +40,9 @@ namespace iamaprogrammer {
   }
 
   size_t SndlibAudioReader::read(IAudioResampler& resampler, AudioBuffer& buffer) {
-    int srConvertionRatio = resampler.getSampleRateConversionRatio();
+    
+
+    double srConvertionRatio = resampler.getSampleRateConversionRatio();
     AudioChunk chunk((this->frameReadCount * srConvertionRatio) * this->audioFileDescriptor.channels);
 
     long long readCount = sf_readf_float(this->file, this->readBuffer.data(), this->frameReadCount);
@@ -66,8 +68,8 @@ namespace iamaprogrammer {
     return this->readBuffer.data();
   }
 
-  AudioFileDescriptor* SndlibAudioReader::getAudioFileDescriptor() {
-    return &this->audioFileDescriptor;
+  AudioFileDescriptor& SndlibAudioReader::getAudioFileDescriptor() {
+    return this->audioFileDescriptor;
   }
 
   int SndlibAudioReader::getFrameReadCount() {

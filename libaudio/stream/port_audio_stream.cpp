@@ -8,17 +8,14 @@ namespace iamaprogrammer {
 
   void PortAudioStream::openStream() {
     std::cout << "AUDIO STREAM" << std::endl;
-    std::cout << "\tCreating Stream Data." << std::endl;
-    this->audioStreamData = std::make_unique<AudioStreamData>(
-      this->audioBuffer->getAudioFileDescriptor(),
-      *this->audioBuffer
-    );
+    
     // this->audioStreamData.data = this->audioBuffer->getAudioFileDescriptor();
     // this->audioStreamData.buffer = *this->audioBuffer;
 
     std::cout << "\tGetting Output Device." << std::endl;
 
     PaDeviceIndex devicesCount = Pa_GetDeviceCount();
+    std::cout << "\tDevice Count: " << devicesCount << std::endl;
     for (PaDeviceIndex device = 0; device < devicesCount; device++) {
       const PaDeviceInfo* deviceInfo = Pa_GetDeviceInfo(device);
 
