@@ -3,11 +3,22 @@
 #include <string>
 #include <atomic>
 #include <memory>
-#include "../reader/iaudio_reader.h"
-#include "../resampler/iaudio_resampler.h"
+#include "../reader/decoder/iaudio_decoder.h"
+#include "../reader/resampler/iaudio_resampler.h"
+#include "../reader/audio_reader.h"
 #include "../audio_buffer.h"
 
 namespace iamaprogrammer {
+
+  /*
+  Holds data important to audio streams.
+
+  - data:       File information related to timing.
+  - buffer:     File read buffer typically provided by file reader.
+  - seeking:    Whether a "seeking" action should happen. (eg. fast-forward/backward)
+  - seekOffest: How much to offset audio stream pointer when seeking.
+  - start:      The place in which to start reading audio
+  */
 
   struct AudioStreamData {
     const AudioFileDescriptor& data;
@@ -22,27 +33,17 @@ namespace iamaprogrammer {
     AudioStreamData(const AudioFileDescriptor& audioDesriptor, AudioBuffer& audioBuffer) : data(audioDesriptor), buffer(audioBuffer) {}
   };
 
-  /*
-  Holds data important to audio streams.
-
-  - data:       File information related to timing.
-  - buffer:     File read buffer typically provided by file reader.
-  - seeking:    Whether a "seeking" action should happen. (eg. fast-forward/backward)
-  - seekOffest: How much to offset audio stream pointer when seeking.
-  - start:      The place in which to start reading audio
-  */
-
   class IBasicAudioStream {
   public:
-    enum PlayingState {
-      PLAYING,
-      STOPPED
-    };
+    // enum PlayingState {
+    //   PLAYING,
+    //   STOPPED
+    // };
 
-    IBasicAudioStream(IAudioReader& reader, IAudioResampler& resampler) {
+    IBasicAudioStream(AudioReader& reader) {
       this->audioBuffer = std::make_unique<AudioBuffer>(
         reader.getAudioFileDescriptor(), 
-        reader.getFrameReadCount() * resampler.getSampleRateConversionRatio()
+        reader.getFrameReadCount() * reader.getSampleRateConversionRatio()
       );
 
       this->audioStreamData = std::make_unique<AudioStreamData>(
@@ -78,6 +79,6 @@ namespace iamaprogrammer {
     //std::unique_ptr<IAudioReader> audioReader;
     //std::unique_ptr<IAudioResampler> audioResampler;
 
-    std::atomic<PlayingState> playingState = PlayingState::STOPPED;
+    //std::atomic<PlayingState> playingState = PlayingState::STOPPED;
   };
 }

@@ -10,13 +10,6 @@ int main() {
   iamaprogrammer::PortAudioBackend backend;
   backend.initialize();
 
-  // iamaprogrammer::SndlibAudioReader reader(1024);
-  // reader.open("test_files/test.mp3");
-
-  // iamaprogrammer::SRAudioResampler resampler(reader, backend.getDefaultAudioDevice().samplerate);
-  // iamaprogrammer::PortAudioStream stream(reader, resampler);
-
-  // iamaprogrammer::AudioStream audioStream(&reader, &resampler, &stream);
   iamaprogrammer::AudioStream audioStream = 
       iamaprogrammer::AudioStreamFactory::fromFile(backend, "test_files/test.mp3");
 

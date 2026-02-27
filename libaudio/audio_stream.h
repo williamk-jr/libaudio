@@ -11,8 +11,7 @@
 #include "audio_stream_settings.h"
 #include "audio_file_descriptor.h"
 #include "stream/ibasic_audio_stream.h"
-#include "reader/iaudio_reader.h"
-#include "resampler/iaudio_resampler.h"
+#include "reader/audio_reader.h"
 
 namespace iamaprogrammer {
   class AudioStream {
@@ -20,7 +19,7 @@ namespace iamaprogrammer {
 
       AudioStream();
       
-      AudioStream(std::unique_ptr<IAudioReader> reader, std::unique_ptr<IAudioResampler> resampler, std::unique_ptr<IBasicAudioStream> stream);
+      AudioStream(std::unique_ptr<AudioReader> reader, std::unique_ptr<IBasicAudioStream> stream);
 
       /**
        * @brief Prepare stream for usage.
@@ -92,12 +91,8 @@ namespace iamaprogrammer {
       static int MAX_LOADED_CHUNKS;
       
       // Essential
-      std::unique_ptr<IAudioReader> reader;
-      std::unique_ptr<IAudioResampler> resampler;
+      std::unique_ptr<AudioReader> reader;
       std::unique_ptr<IBasicAudioStream> basicAudioStream;
-      // IAudioReader* reader;
-      // IAudioResampler* resampler;
-      // IBasicAudioStream* basicAudioStream;
       std::thread audioReaderThread;
 
       // State

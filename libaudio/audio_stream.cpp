@@ -7,9 +7,8 @@ namespace iamaprogrammer {
 
   AudioStream::AudioStream() {};
 
-  AudioStream::AudioStream(std::unique_ptr<IAudioReader> reader, std::unique_ptr<IAudioResampler> resampler, std::unique_ptr<IBasicAudioStream> stream) :
+  AudioStream::AudioStream(std::unique_ptr<AudioReader> reader, std::unique_ptr<IBasicAudioStream> stream) :
     reader(std::move(reader)),
-    resampler(std::move(resampler)),
     basicAudioStream(std::move(stream))
   {};
   
@@ -66,11 +65,11 @@ namespace iamaprogrammer {
     }
     this->streamState = StreamState::CLOSED;
 
-    //if (this->audioReaderThread.joinable()) {
+    if (this->audioReaderThread.joinable()) {
       std::cout << "Joining audio reader thread." << std::endl;
       this->audioReaderThread.join();
       std::cout << "Audio reader thread joined." << std::endl;
-    //}
+    }
 
     this->basicAudioStream->closeStream();
     this->handleError();
@@ -113,7 +112,7 @@ namespace iamaprogrammer {
         continue;
       }
 
-      size_t readSize = this->reader->read(*this->resampler, this->basicAudioStream->getAudioBuffer());
+      size_t readSize = this->reader->read(this->basicAudioStream->getAudioBuffer());
     }
     this->reader->close();
   }

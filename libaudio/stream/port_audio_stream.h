@@ -10,7 +10,7 @@
 namespace iamaprogrammer {
   class PortAudioStream : public IBasicAudioStream {
   public:
-    PortAudioStream(IAudioReader& reader, IAudioResampler& resampler);
+    PortAudioStream(AudioReader& reader);
 
     void openStream() override;
     void closeStream() override;

@@ -2,9 +2,11 @@
 #include "audio_stream.h"
 #include "audio_stream_settings.h"
 
-#include "reader/sndlib_audio_reader.h"
+#include "reader/audio_reader.h"
 
-#include "resampler/sr_audio_resampler.h"
+#include "reader/decoder/sndlib_audio_decoder.h"
+
+#include "reader/resampler/sr_audio_resampler.h"
 
 #include "stream/port_audio_stream.h"
 

@@ -2,9 +2,7 @@
 
 namespace iamaprogrammer {
 
-  PortAudioStream::PortAudioStream(IAudioReader& reader, IAudioResampler& resampler) : IBasicAudioStream(reader, resampler) {
-    
-  }
+  PortAudioStream::PortAudioStream(AudioReader& reader) : IBasicAudioStream(reader) {}
 
   void PortAudioStream::openStream() {
     std::cout << "AUDIO STREAM" << std::endl;
