@@ -35,7 +35,7 @@ iamaprogrammer::PortAudioBackend backend;
 backend.initialize();
 ```
 
-# Using the factory
+### Using the factory
 Once you have a backend, you can create audio streams.
 Libaudio provides multiple different ways to create audio streams.
 However, the easiest way is to use the factory.
@@ -47,7 +47,7 @@ iamaprogrammer::AudioStream audioStream = iamaprogrammer::AudioStreamFactory::fr
 You may also pass in a settings object where you can choose the decoder, resampler, and audio stream implementations.
 This provides you more freedom in how the components are constructed.
 
-# Using components directly
+### Using components directly
 You may also manually construct the components of an audio stream.
 
 ```cpp
