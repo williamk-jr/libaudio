@@ -19,5 +19,10 @@ namespace iamaprogrammer {
     public:
       static AudioStream fromFile(const IAudioBackend& backend, const std::string& filePath);
       static AudioStream fromFile(const IAudioBackend& backend, const std::string& filePath, AudioStreamSettings settings);
+
+    private:
+      static std::unique_ptr<IAudioDecoder> createDecoder(AudioStreamSettings settings);
+      static std::unique_ptr<IAudioResampler> createResampler(AudioStreamSettings settings, const IAudioBackend& backend);
+      static std::unique_ptr<IBasicAudioStream> createAudioStream(AudioStreamSettings settings, AudioReader& reader);
   };
 }

@@ -14,13 +14,17 @@ namespace iamaprogrammer {
     AudioBuffer(AudioFileDescriptor& audioFileDescriptor, int framesReadCount);
 
     void push(AudioChunk& chunk);
+
     AudioChunk& front();
+
     void pop();
 
     size_t size();
+
     bool isEmpty();
 
     const AudioFileDescriptor& getAudioFileDescriptor();
+
     const int getFrameReadCount();
 
   private:

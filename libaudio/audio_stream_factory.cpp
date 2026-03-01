@@ -2,40 +2,12 @@
 
 namespace iamaprogrammer {
     AudioStream AudioStreamFactory::fromFile(const IAudioBackend& backend, const std::string& filePath, AudioStreamSettings settings) {
-        std::unique_ptr<IAudioDecoder> decoder;
-        std::unique_ptr<IAudioResampler> resampler; 
-
-        std::unique_ptr<AudioReader> reader;
-        std::unique_ptr<IBasicAudioStream> stream;
-
-        switch (settings.readerSettings.readerType) {
-            case ReaderType::SNDLIB:
-                decoder = std::make_unique<SndlibAudioDecoder>(settings.readerSettings.bufferSize);
-                break;
-            default:
-                throw std::runtime_error("Unsupported reader type");
-        }
-
-        switch (settings.resamplerSettings.resamplerType) {
-            case ResamplerType::SR:
-                resampler = std::make_unique<SRAudioResampler>(backend.getDefaultAudioDevice().samplerate);
-                break;
-            default:
-                throw std::runtime_error("Unsupported resampler type");
-        }
-
-        reader = std::make_unique<AudioReader>(std::move(decoder), std::move(resampler));
+        std::unique_ptr<IAudioDecoder> decoder = AudioStreamFactory::createDecoder(settings);
+        std::unique_ptr<IAudioResampler> resampler = AudioStreamFactory::createResampler(settings, backend); 
+        std::unique_ptr<AudioReader> reader = std::make_unique<AudioReader>(std::move(decoder), std::move(resampler));
         reader->open(filePath);
 
-        std::cout << "Create audio stream" << std::endl;
-        switch (settings.streamSettings.streamType) {
-            case StreamType::PORTAUDIO:
-                stream = std::make_unique<PortAudioStream>(*reader);
-                break;
-            default:
-                throw std::runtime_error("Unsupported stream type");
-        }
-
+        std::unique_ptr<IBasicAudioStream> stream = AudioStreamFactory::createAudioStream(settings, *reader);
         return iamaprogrammer::AudioStream(std::move(reader), std::move(stream));
     }
 
@@ -46,5 +18,32 @@ namespace iamaprogrammer {
         settings.streamSettings.streamType = StreamType::PORTAUDIO;
 
         return fromFile(backend, filePath, settings);
+    }
+
+    std::unique_ptr<IBasicAudioStream> AudioStreamFactory::createAudioStream(AudioStreamSettings settings, AudioReader& reader) {
+      switch (settings.streamSettings.streamType) {
+          case StreamType::PORTAUDIO:
+              return std::make_unique<PortAudioStream>(reader);
+          default:
+              throw std::runtime_error("Unsupported stream type");
+      }
+    }
+
+    std::unique_ptr<IAudioDecoder> AudioStreamFactory::createDecoder(AudioStreamSettings settings) {
+      switch (settings.readerSettings.readerType) {
+          case ReaderType::SNDLIB:
+              return std::make_unique<SndlibAudioDecoder>(settings.readerSettings.bufferSize);
+          default:
+              throw std::runtime_error("Unsupported reader type");
+      }
+    }
+
+    std::unique_ptr<IAudioResampler> AudioStreamFactory::createResampler(AudioStreamSettings settings, const IAudioBackend& backend) {
+      switch (settings.resamplerSettings.resamplerType) {
+          case ResamplerType::SR:
+              return std::make_unique<SRAudioResampler>(backend.getDefaultAudioDevice().samplerate);
+          default:
+              throw std::runtime_error("Unsupported resampler type");
+      }
     }
 }

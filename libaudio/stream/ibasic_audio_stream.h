@@ -35,11 +35,6 @@ namespace iamaprogrammer {
 
   class IBasicAudioStream {
   public:
-    // enum PlayingState {
-    //   PLAYING,
-    //   STOPPED
-    // };
-
     IBasicAudioStream(AudioReader& reader) {
       this->audioBuffer = std::make_unique<AudioBuffer>(
         reader.getAudioFileDescriptor(), 
@@ -51,6 +46,8 @@ namespace iamaprogrammer {
         *this->audioBuffer
       );
     }
+
+    virtual ~IBasicAudioStream() = default;
 
     virtual void openStream() = 0;
     virtual void closeStream() = 0;
@@ -66,7 +63,6 @@ namespace iamaprogrammer {
     virtual long streamPosition() = 0;
     virtual long streamDuration() = 0;
 
-    //virtual double getSampleRate() = 0;
     virtual int getChannelCount() = 0;
     virtual AudioBuffer& getAudioBuffer() = 0;
 
@@ -76,9 +72,5 @@ namespace iamaprogrammer {
   protected:
     std::unique_ptr<AudioBuffer> audioBuffer;
     std::unique_ptr<AudioStreamData> audioStreamData;
-    //std::unique_ptr<IAudioReader> audioReader;
-    //std::unique_ptr<IAudioResampler> audioResampler;
-
-    //std::atomic<PlayingState> playingState = PlayingState::STOPPED;
   };
 }

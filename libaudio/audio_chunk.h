@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <queue>
 
 namespace iamaprogrammer {
   class AudioChunk {
@@ -15,6 +14,4 @@ namespace iamaprogrammer {
     long size = 0;
     std::vector<float> buffer;
   };
-
-  //typedef std::queue<AudioChunk> AudioBuffer;
 };

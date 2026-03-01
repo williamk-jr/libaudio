@@ -13,6 +13,9 @@ namespace iamaprogrammer {
   friend class AudioReader;
   friend class IAudioResampler;
 
+  public:
+    virtual ~IAudioDecoder() = default;
+
   protected:
 
     /*

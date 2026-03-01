@@ -50,9 +50,15 @@ namespace iamaprogrammer {
       
       /**
        * @brief Get total duration of audio stream.
+       * @return Total duration in milliseconds.
+       */
+      double durationInMilliseconds();
+
+      /**
+       * @brief Get total duration of audio stream.
        * @return Total duration in seconds.
        */
-      long duration();
+      double durationInSeconds();
       
       /**
        * @brief Whether the stream has finished processing data.

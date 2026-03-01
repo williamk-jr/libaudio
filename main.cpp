@@ -13,6 +13,10 @@ int main() {
   iamaprogrammer::AudioStream audioStream = 
       iamaprogrammer::AudioStreamFactory::fromFile(backend, "test_files/test.mp3");
 
+  std::cout << "Duration (Seconds): " << audioStream.durationInSeconds() << "\n";
+  std::cout << "Duration (Milliseconds): " << audioStream.durationInMilliseconds() << "\n";
+
+
   audioStream.setup();
   audioStream.start();
 

@@ -4,7 +4,7 @@ namespace iamaprogrammer {
   SndlibAudioDecoder::SndlibAudioDecoder() {}
 
   SndlibAudioDecoder::SndlibAudioDecoder(int frameReadCount): 
-    readSize(readSize), frameReadCount(frameReadCount) {}
+    frameReadCount(frameReadCount) {}
 
   void SndlibAudioDecoder::open(std::filesystem::path filePath) {
     std::cout << "READER" << std::endl;

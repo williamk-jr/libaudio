@@ -51,7 +51,6 @@ namespace iamaprogrammer {
   }
 
   void AudioStream::stop() {
-    //std::cout << "Ending stream." << std::endl;
     if (this->basicAudioStream->isStreamActive()) {
       this->basicAudioStream->stopStream();
       this->handleError();
@@ -82,8 +81,12 @@ namespace iamaprogrammer {
     return this->basicAudioStream->streamPosition() / this->reader->getAudioFileDescriptor().sampleRate;
   }
 
-  long AudioStream::duration() {
-    return this->basicAudioStream->streamDuration() / this->reader->getAudioFileDescriptor().sampleRate;
+  double AudioStream::durationInSeconds() {
+    return (double)this->basicAudioStream->streamDuration() / this->reader->getAudioFileDescriptor().sampleRate;
+  }
+
+  double AudioStream::durationInMilliseconds() {
+    return this->durationInSeconds() * 1000;
   }
 
   bool AudioStream::isFinished() {
